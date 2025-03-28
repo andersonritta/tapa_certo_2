@@ -6,7 +6,7 @@ Modelo de Dados - Projeto FastFruit
 FastFruit é um jogo de memória e reflexo onde o jogador identifica frutas específicas. O
 sistema gera estatísticas que são exportadas em formato CSV.
 
-Estrutura de Dados
+## Estrutura de Dados:
 ![image](https://github.com/user-attachments/assets/98e21008-293f-42b6-af93-121e4b17d637)
 
 
