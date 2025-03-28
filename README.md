@@ -8,6 +8,7 @@ sistema gera estatísticas que são exportadas em formato CSV.
 
 ## Estrutura de Dados:
 ![image](https://github.com/user-attachments/assets/98e21008-293f-42b6-af93-121e4b17d637)
+**OBS: Os dados inseridos no exemplo acima são apenas para conhecimento, no arquivo eles estão conforme o requisitado.
 
 
 ## Geração de Dados:
