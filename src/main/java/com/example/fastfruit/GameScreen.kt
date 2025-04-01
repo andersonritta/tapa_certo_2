@@ -68,6 +68,7 @@ class GameScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         startGame()
+        startService(Intent(this, MusicService::class.java))
     }
 
     private fun startGame(){
@@ -219,8 +220,6 @@ class GameScreen : AppCompatActivity() {
     private fun finalizarJogo(){
         horaFim = horaAtual()
 
-
-
         val dialog = FinishScreen().apply {
             arguments = Bundle().apply {
                 putString("horaInicio", horaInicio.toString())
@@ -245,6 +244,11 @@ class GameScreen : AppCompatActivity() {
             finalizarJogo()
         }
             stopService(Intent(this, MusicService::class.java))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startService(Intent(this,MusicService::class.java))
     }
 
 

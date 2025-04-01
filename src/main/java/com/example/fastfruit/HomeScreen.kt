@@ -32,4 +32,14 @@ class HomeScreen : AppCompatActivity() {
         stopService(Intent(this, MusicService::class.java)) // Para a música ao fechar o app
     }
 
+    override fun onPause() {
+        super.onPause()
+        stopService(Intent(this, MusicService::class.java))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startService(Intent(this, MusicService::class.java))
+    }
+
 }
