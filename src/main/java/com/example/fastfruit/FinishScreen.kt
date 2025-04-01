@@ -52,7 +52,10 @@ class FinishScreen : DialogFragment(){
     private val createFileLauncher =
         registerForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
             if (uri != null) {
-                savePreferences("arquivoUri", uri.toString()) // Salvar a URI do arquivo criado
+                requireContext().contentResolver.takePersistableUriPermission(
+                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                savePreferences("arquivoUri", uri.toString()) // Salvar a URI do arquivo
                 salvarRelatorio(uri.toString(), true) // Criar e escrever o cabeçalho no arquivo
             } else {
                 Toast.makeText(requireContext(), "Erro ao criar o arquivo.", Toast.LENGTH_SHORT).show()
@@ -87,8 +90,35 @@ class FinishScreen : DialogFragment(){
         }
     }
 
+    private val openFileLauncher =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                requireContext().contentResolver.takePersistableUriPermission(
+                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                savePreferences("arquivoUri", uri.toString()) // Atualiza a URI salva
+                salvarRelatorio(uri.toString(), false) // Adiciona uma nova linha
+            } else {
+                Toast.makeText(requireContext(), "Erro ao abrir o arquivo.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     private fun adicionarNovaLinha(uriString: String) {
-        salvarRelatorio(uriString, false) // Apenas adiciona uma nova linha ao arquivo existente
+        try {
+            val uri = Uri.parse(uriString)
+            val resolver = requireContext().contentResolver
+
+            // Verifica se temos permissão para o URI antes de usá-lo
+            resolver.persistedUriPermissions.find { it.uri == uri }?.let {
+                salvarRelatorio(uriString, false)
+            } ?: run {
+                // Se não houver permissão, abre o seletor de documentos
+                openFileLauncher.launch(arrayOf("text/comma-separated-values", "text/csv", "application/csv"))
+            }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Erro ao acessar o arquivo.", Toast.LENGTH_SHORT).show()
+            openFileLauncher.launch(arrayOf("text/csv"))
+        }
     }
 
     private fun savePreferences(key: String, value: String) {
